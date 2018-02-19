@@ -5,7 +5,7 @@
     </div>
 </template>
 <script>
-    exports.default = {
+    export default {
         props:{
           back:{
             type:Boolean,
