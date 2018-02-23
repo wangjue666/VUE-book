@@ -1,6 +1,7 @@
 let http=require('http');
 let fs=require('fs');
 let url=require('url');
+
 function read(cb) {
   fs.readFile('./book.json','utf8',function(err,data){
     if(err||data.length==0){
@@ -17,8 +18,8 @@ function write(data,cb){
 let sliders=require('./sliders.js');
 http.createServer((req,res)=>{
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
-  res.setHeader("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+  res.setHeader("Access-Control-Allow-Methods","*");
   res.setHeader("X-Powered-By",' 3.2.1')
   if(req.method=='OPTIONS') return res.end();
 
@@ -42,8 +43,13 @@ http.createServer((req,res)=>{
     let id=parseInt(query.id);
     switch (req.method){
       case 'GET':
-        if(id){
-
+        if(!isNaN(id)){
+          read(function(books){
+            let book=books.find(item=>item.bookId===id);
+            if(!book) book={};
+            res.setHeader('Content-Type','application/json;charser=utf8');
+            res.end(JSON.stringify(book));
+          })
         }else{ //获取所有图书
           read(function(books){
             res.setHeader('Content-Type','application/json;charser=utf8');
@@ -52,8 +58,42 @@ http.createServer((req,res)=>{
         }
         break;
       case 'POST':
+        let str='';
+        req.on('data',chunk=>{
+          str+=chunk;
+        });
+        req.on('end',()=>{
+          let book=JSON.parse(str);
+          read(function(books){
+            book.bookId=books.length?books.length:1;
+            books.push(book);
+            write(books,function(){
+              res.end(JSON.stringify(book))
+            })
+          })
+        })
         break;
       case 'PUT':
+        if(id){
+          let str='';
+          req.on('data',chunk=>{
+            str+=chunk;
+          })
+          req.on('end',()=>{
+            let book=JSON.parse(str);
+            read(function(books){
+              books=books.map(item=>{
+                if(item.bookId===id){
+                  return book;
+                }
+                return item;
+              });
+              write(books,function(){
+                res.end(JSON.stringify(book))
+              })
+            })
+          })
+        }
         break;
       case 'DELETE':
         read(function(books){

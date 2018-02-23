@@ -12,7 +12,7 @@ export default new Router({
     {path:'/',redirect:'/home'},
     {path:'/home',component:Home},
     {path:'/add',component:Add},
-    {path:'/detail',component:Detail},
+    {path:'/detail/:bid',component:Detail,name:'detail'},
     {path:'/list',component:List},
     {path:'/collect',component:Collect},
     {path:'*',redirect:'/home'},

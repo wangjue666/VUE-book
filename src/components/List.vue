@@ -3,16 +3,16 @@
       <VHeader>列表页</VHeader>
       <div class="content">
         <ul>
-          <li v-for="book in books">
+          <router-link v-for="(book,index) in books" :to="{name:'detail',params:{bid:book.bookId}}" :key="index" tag="li">
             <img :src="book.bookCover" alt="">
             <div>
               <h4>{{book.bookName}}</h4>
               <p>{{book.bookInfo}}</p>
               <b>{{book.bookPrice}}</b>
-              <button @click="remove(book.bookId)" class="btn btn-primary">删除</button>
+              <button @click.stop="remove(book.bookId)" class="btn btn-primary">删除</button>
             </div>
 
-          </li>
+          </router-link>
         </ul>
       </div>
     </div>
