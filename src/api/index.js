@@ -32,3 +32,7 @@ export let updateBook=(id,data)=>{
 export let addBook=(data)=>{
   return axios.post('/book',data);
 }
+//根据偏移量返回对应的数据
+export let pogination=(offset)=>{
+  return axios.get(`/page?offset=${offset}`);
+}

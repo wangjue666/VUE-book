@@ -9,8 +9,10 @@ import Detail from '../components/Detail.vue';
 import Add from '../components/Add.vue';
 export default new Router({
   routes: [
-    {path:'/',redirect:'/home'},
-    {path:'/home',component:Home},
+    {path:'/',
+     redirect:'/home',
+    },
+    {path:'/home',component:Home,meta:{keepAlive:true}},
     {path:'/add',component:Add},
     {path:'/detail/:bid',component:Detail,name:'detail'},
     {path:'/list',component:List},

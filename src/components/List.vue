@@ -1,7 +1,7 @@
 <template>
     <div>
       <VHeader>列表页</VHeader>
-      <div class="content">
+      <div class="content" ref="scroll" @scroll="loadMore">
         <ul>
           <router-link v-for="(book,index) in books" :to="{name:'detail',params:{bid:book.bookId}}" :key="index" tag="li">
             <img :src="book.bookCover" alt="">
@@ -11,26 +11,47 @@
               <b>{{book.bookPrice}}</b>
               <button @click.stop="remove(book.bookId)" class="btn btn-primary">删除</button>
             </div>
-
           </router-link>
         </ul>
+
       </div>
     </div>
 </template>
 <script>
-import {getBooks,removeBook} from "../api";
+import {pogination,removeBook} from "../api";
 import VHeader from '../base/VHeader.vue';
     export default {
         created(){
           this.getData();
         },
         data() {
-            return {books:[]}
+            return {books:[],offset:0,hasMore:true,isLoading:false}
         },
         computed: {},
         methods: {
+          loadMore(){
+            clearTimeout(this.timer);
+            this.timer=setTimeout(()=>{
+              let {scrollTop,clientHeight,scrollHeight}=this.$refs.scroll;
+              if(scrollTop+clientHeight+20>=scrollHeight){
+                this.getData();
+              }
+            },13)
+
+          },
+          more(){
+            this.getData();
+          },
           async getData(){
-              this.books=await getBooks();
+             if(this.hasMore&&!this.isLoading){
+               this.isLoading=true;
+               let {hasMore,books}=await pogination(this.offset);
+               this.books=[...this.books,...books];
+               this.hasMore=hasMore;
+               this.isLoading=false;
+               this.offset=this.books.length;
+             }
+
           },
           async remove(id){
             await removeBook(id);
@@ -81,5 +102,8 @@ import VHeader from '../base/VHeader.vue';
     border: 1px solid transparent;
     border-radius: 4px;
     display:block;
+  }
+  .more{
+    margin:10px auto;
   }
 </style>

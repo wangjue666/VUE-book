@@ -1,7 +1,7 @@
 let http=require('http');
 let fs=require('fs');
 let url=require('url');
-
+let pageSize=5;
 function read(cb) {
   fs.readFile('./book.json','utf8',function(err,data){
     if(err||data.length==0){
@@ -26,6 +26,19 @@ http.createServer((req,res)=>{
 
   let {pathname,query}=url.parse(req.url,true);//true把query转换成对象
   console.log({pathname,query})
+  if(pathname=="/page"){
+    let offset=parseInt(query.offset)||0;
+    read(function(books){
+      let result=books.slice(offset,offset+pageSize);
+      let hasMore=true;
+      if(books.length<=(offset+pageSize)){
+        hasMore=false;
+      }
+      res.setHeader('Content-Type','application/json;charser=utf8');
+      res.end(JSON.stringify({hasMore,books:result}));
+    })
+    return
+  }
   if(pathname=='/sliders'){
     console.log('s')
     res.setHeader('Content-Type','application/json;charser=utf8')
