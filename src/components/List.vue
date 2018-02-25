@@ -27,6 +27,39 @@ import VHeader from '../base/VHeader.vue';
         data() {
             return {books:[],offset:0,hasMore:true,isLoading:false}
         },
+        mounted(){
+          let scroll=this.$refs.scroll;
+          let top=scroll.offsetTop;
+          scroll.addEventListener('touchstart',(e)=>{
+            if(scroll.scrollTop!=0&&scroll.offsetTop!=top) return;
+            let start=e.touches[0].pageY;
+            let distance=0;
+            scroll.style.transition='none';
+            console.log(scroll.scrollTop)
+            let move=(e)=>{
+              let current=e.touches[0].pageY;
+              distance=current-start;
+              if(distance>0){
+                if(distance<=50&&scroll.scrollTop==0){
+
+                  scroll.style.top=distance+top+'px'
+                }
+                distance=0;
+              }else{
+                scroll.removeEventListener('touchend',end);
+                scroll.removeEventListener('touchmove',move);
+              }};
+            let end=(e)=>{
+              scroll.style.transition='.4s';
+              scroll.style.top=top+'px';
+              distance=0;
+            };
+            scroll.addEventListener('touchmove',move);
+            scroll.addEventListener('touchend',end);
+
+
+          })
+        },
         computed: {},
         methods: {
           loadMore(){
