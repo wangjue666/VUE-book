@@ -4,7 +4,7 @@
       <div class="content" ref="scroll" @scroll="loadMore">
         <ul>
           <router-link v-for="(book,index) in books" :to="{name:'detail',params:{bid:book.bookId}}" :key="index" tag="li">
-            <img :src="book.bookCover" alt="">
+            <img v-lazy="book.bookCover" alt="">
             <div>
               <h4>{{book.bookName}}</h4>
               <p>{{book.bookInfo}}</p>
@@ -41,10 +41,9 @@ import VHeader from '../base/VHeader.vue';
               distance=current-start;
               if(distance>0){
                 if(distance<=50&&scroll.scrollTop==0){
-
-                  scroll.style.top=distance+top+'px'
+                  scroll.style.top=distance+top+'px';
+                  scroll.addEventListener('touchend',end);
                 }
-                distance=0;
               }else{
                 scroll.removeEventListener('touchend',end);
                 scroll.removeEventListener('touchmove',move);
@@ -52,10 +51,14 @@ import VHeader from '../base/VHeader.vue';
             let end=(e)=>{
               scroll.style.transition='.4s';
               scroll.style.top=top+'px';
-              distance=0;
+              this.books=[];
+              this.hasMore=true;
+              this.isLoading=false;
+              this.offset=0;
+              this.getData();
             };
             scroll.addEventListener('touchmove',move);
-            scroll.addEventListener('touchend',end);
+
 
 
           })

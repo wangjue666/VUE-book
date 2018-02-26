@@ -16,3 +16,4 @@
 - 默认添加5条，前台告诉后台从第几条开始加重
 - /page?offset=5
 - 后台返回还要告诉是否有更多数据 hasMore:boolean
+##coding split 代码分离

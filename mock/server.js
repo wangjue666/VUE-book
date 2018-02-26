@@ -120,4 +120,19 @@ http.createServer((req,res)=>{
     }
     return
   }
+
+  fs.stat('.'+pathname,function(err,stats){
+    if(err){
+      res.statusCode=404;
+      res.end('NOT FOUND');
+    }else{
+      if(stats.isDirectory()){
+        let p=require('path').join('.'+pathname,'./index.html')
+        fs.createReadStream(p).pipe(res);
+      }else{
+        fs.createReadStream('.'+pathname).pipe(res);
+      }
+
+    }
+  });
 }).listen(3000)
