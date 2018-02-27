@@ -1,3 +1,7 @@
+# 运行该项目
+  -npm run dev
+  -node ./mock/server.js
+
 ## this project need less axios etc
 '''
   npm install less less-loader axios vuex bootstrap

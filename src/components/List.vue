@@ -9,7 +9,11 @@
               <h4>{{book.bookName}}</h4>
               <p>{{book.bookInfo}}</p>
               <b>{{book.bookPrice}}</b>
-              <button @click.stop="remove(book.bookId)" class="btn btn-primary">删除</button>
+              <div class="btn-group">
+                <button @click.stop="" class="btn btn-primary">添加</button>
+                <button @click.stop="remove(book.bookId)" class="btn btn-primary">删除</button>
+              </div>
+
             </div>
           </router-link>
         </ul>
@@ -28,6 +32,7 @@ import VHeader from '../base/VHeader.vue';
             return {books:[],offset:0,hasMore:true,isLoading:false}
         },
         mounted(){
+          let mv=false;
           let scroll=this.$refs.scroll;
           let top=scroll.offsetTop;
           scroll.addEventListener('touchstart',(e)=>{
@@ -41,6 +46,7 @@ import VHeader from '../base/VHeader.vue';
               distance=current-start;
               if(distance>0){
                 if(distance<=50&&scroll.scrollTop==0){
+                  mv=true;
                   scroll.style.top=distance+top+'px';
                   scroll.addEventListener('touchend',end);
                 }
@@ -49,12 +55,14 @@ import VHeader from '../base/VHeader.vue';
                 scroll.removeEventListener('touchmove',move);
               }};
             let end=(e)=>{
+              if(!mv) return;
               scroll.style.transition='.4s';
               scroll.style.top=top+'px';
               this.books=[];
               this.hasMore=true;
               this.isLoading=false;
               this.offset=0;
+              mv=false;
               this.getData();
             };
             scroll.addEventListener('touchmove',move);
@@ -112,6 +120,7 @@ import VHeader from '../base/VHeader.vue';
   .content ul li h4{
     line-height:24px;
   }
+
   .btn-primary {
     color: #fff;
     background-color: #337ab7;
@@ -137,9 +146,9 @@ import VHeader from '../base/VHeader.vue';
     background-image: none;
     border: 1px solid transparent;
     border-radius: 4px;
-    display:block;
   }
-  .more{
-    margin:10px auto;
+  .btn-group{
+    float:right;
+    margin-top:10px;
   }
 </style>
