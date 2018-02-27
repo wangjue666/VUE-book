@@ -10,7 +10,7 @@
       </router-link>
       <router-link to="/collect">
         <i class="iconfont">&#xe60b;</i>
-        <span>收藏</span>
+        <span>购物车</span>
       </router-link>
       <router-link to="/add">
         <i class="iconfont">&#xe68f;</i>

@@ -10,7 +10,7 @@
               <p>{{book.bookInfo}}</p>
               <b>{{book.bookPrice}}</b>
               <div class="btn-group">
-                <button @click.stop="" class="btn btn-primary">添加</button>
+                <button @click.stop="addCart(book)" class="btn btn-primary">添加</button>
                 <button @click.stop="remove(book.bookId)" class="btn btn-primary">删除</button>
               </div>
 
@@ -24,6 +24,7 @@
 <script>
 import {pogination,removeBook} from "../api";
 import VHeader from '../base/VHeader.vue';
+import * as Types from '../store/mutations-type';
     export default {
         created(){
           this.getData();
@@ -40,7 +41,6 @@ import VHeader from '../base/VHeader.vue';
             let start=e.touches[0].pageY;
             let distance=0;
             scroll.style.transition='none';
-            console.log(scroll.scrollTop)
             let move=(e)=>{
               let current=e.touches[0].pageY;
               distance=current-start;
@@ -73,6 +73,9 @@ import VHeader from '../base/VHeader.vue';
         },
         computed: {},
         methods: {
+          addCart(book){
+            this.$store.commit(Types.ADD_CART,book);
+          },
           loadMore(){
             clearTimeout(this.timer);
             this.timer=setTimeout(()=>{

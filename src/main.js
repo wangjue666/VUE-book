@@ -22,10 +22,12 @@ router.beforeEach(function(to,from,next){
   document.title=to.meta.title;
   next();
 })
+import store from './store';
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
